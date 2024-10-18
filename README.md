@@ -33,6 +33,13 @@ Crie o diretório 'config.json'
 }
 ```
 
+em 'index.js' na linha 20 substitua 'sua pergunta aqui' pela mensagem que deseja.
+```
+const questions = [
+    'sua pergunta aqui',
+];
+```
+
 ## Links
 * [Discord.js](https://discord.js.org/) Biblioteca para integração com o discord
 * [Discordjs](https://discordjs.guide/#before-you-begin) Biblioteca para integração com o discord
