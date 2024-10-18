@@ -10,16 +10,16 @@ Instale 'npm install dotenv'
 ## Crie
 Crie o diretório '.env'
 
-```
-A=123
+
+```A=123
 B=456
 DISCORD_TOKEN=seu-token-discord
 CLIEND_ID=sua-cliend-id
-GUILD_ID=sua-guild-id
+GUILD_ID=sua-guild-id```
 
 'gitgnore'
 'config.json'
-```
+
 
 ## Links
 * [Discord.js](https://discord.js.org/) Biblioteca para integração com o discord
