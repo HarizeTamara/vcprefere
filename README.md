@@ -17,9 +17,20 @@ CLIEND_ID=sua-cliend-id
 GUILD_ID=sua-guild-id
 ```
 
-'gitgnore'
-'config.json'
+Crie o diretório '.gitgnore'
+```node_modules
+.env
+config.json
+```
 
+Crie o diretório 'config.json'
+```
+{
+	"cliendId": "sua-cliend-id",
+	"guildId": "sua-guild-id",
+	"token": "seu-token-discord"
+}
+```
 
 ## Links
 * [Discord.js](https://discord.js.org/) Biblioteca para integração com o discord
