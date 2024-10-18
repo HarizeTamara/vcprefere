@@ -18,7 +18,8 @@ GUILD_ID=sua-guild-id
 ```
 
 Crie o diretório '.gitgnore'
-```node_modules
+```
+node_modules
 .env
 config.json
 ```
