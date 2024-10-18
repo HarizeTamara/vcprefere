@@ -17,19 +17,7 @@ client.once('ready', async () => {
 
 // List of random questions for the command
 const questions = [
-    'Você prefere nunca mais sentir o gosto de chocolate ou nunca mais ouvir música?',
-    'Você prefere ter que cantar tudo que você fala ou ter que dançar sempre que anda?',
-    'Você prefere ser capaz de voar, mas apenas a 1 metro de altura, ou respirar embaixo d\'água por 5 minutos?',
-    'Você prefere só comer pizza pelo resto da vida ou nunca mais comer pizza?',
-    'Você prefere não poder sentir o gosto ou o cheiro?',
-	'Você prefere ganhar na Mega da Virada, mas perder todos os seus amigos ou Não ganhar e continuar com todos os seus amigos?',
-	'Você prefere não ouvir nenhuma música por um ano inteiro ou ter que escolher 10 apenas músicas para ouvir sem parar por um ano inteiro?',
-	'Você prefere ganhar um oscar ou ganhar um medalha de ouro nas olimpíadas?',
-	'Você prefere descobrir que seu pai não é o pai biológico ou Descobrir que sua mãe quase te abortou?',
-	'Você prefere só poder falar em mandarim ou só escutar as pessoas falando em mandarim?',
-	'Você prefere ser calvo aos 20 anos ou Ser virgem aos 40 anos?',
-	'Você prefere ser colocado em uma prisão de segurança máxima, com criminosos hediondos por um ano ou Ser colocado numa prisão com pessoas que cometeram crimes menores por dez anos?',
-	'Você prefere não ouvir nenhuma música por um ano inteiro ou ter que escolher apenas 10 músicas para ouvir sem para um ano inteiro?',
+    'sua pergunta aqui',
 ];
 
 // Register the slash command /vcprefere
