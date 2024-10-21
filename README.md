@@ -15,7 +15,7 @@ Olá, esse projeto é um estudo sobre discord.js de um bot para Discord permite 
 
 ## Instalando
 
-Instale 'npm istall discord.js'
+Instale 'npm install discord.js'
 Instale 'npm install dotenv'
 
 ## Crie
