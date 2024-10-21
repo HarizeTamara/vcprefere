@@ -52,6 +52,6 @@ const questions = [
 ```
 
 ## Links
-* [Discord.js](https://discord.js.org/) Biblioteca para integração com o discord
-* [Discordjs](https://discordjs.guide/#before-you-begin) Biblioteca para integração com o discord
-* [Discord Developer Portal](https://discord.com/developers/applications): site para registrar sua aplicação/bot;
+* [Discord.js](https://discord.js.org/) Biblioteca para integração com o discord;
+* [Discordjs](https://discordjs.guide/#before-you-begin) Guia para integração com o discord;
+* [Discord Developer Portal](https://discord.com/developers/applications): site para registrar sua aplicação/bot.
