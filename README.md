@@ -28,23 +28,14 @@ CLIEND_ID=sua-cliend-id
 GUILD_ID=sua-guild-id
 ```
 
-Crie o diretório '.gitgnore'
+Crie o diretório `.gitgnore`
 ```
 node_modules
 .env
 config.json
 ```
 
-Crie o diretório 'config.json'
-```
-{
-	"cliendId": "sua-cliend-id",
-	"guildId": "sua-guild-id",
-	"token": "seu-token-discord"
-}
-```
-
-em 'index.js' na linha 20 substitua 'sua pergunta aqui' pela mensagem que deseja.
+em `index.js` na linha 20 substitua `sua pergunta aqui` pela mensagem que deseja.
 ```
 const questions = [
     'sua pergunta aqui',
