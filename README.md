@@ -15,11 +15,11 @@ Olá, esse projeto é um estudo sobre discord.js de um bot para Discord permite 
 
 ## Instalando
 
-Instale 'npm install discord.js'
-Instale 'npm install dotenv'
+Instale `npm install discord.js`
+Instale `npm install dotenv`
 
 ## Crie
-Crie o diretório '.env'
+Crie o diretório `.env`
 ```
 A=123
 B=456
