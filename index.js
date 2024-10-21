@@ -9,6 +9,8 @@ const client = new Client({
 
 // Load the token from the environment variables
 const token = process.env.DISCORD_TOKEN;
+const clientId = process.env.DISCORD_CLIENT_ID;
+const guildId = process.env.DISCORD_GUILD_ID;
 
 // When the bot is ready, this event runs once
 client.once('ready', async () => {
