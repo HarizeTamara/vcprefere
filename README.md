@@ -26,6 +26,9 @@ B=456
 DISCORD_TOKEN=seu-token-discord
 CLIEND_ID=sua-cliend-id
 GUILD_ID=sua-guild-id
+SUBMIT_CHANNEL_ID=canal-que-envia-sugestão
+SUGGESTION_CHANNEL_ID=canal-que-chega-sugestão
+ALLOWED_USER_ID=id-usuario-dono-do-bot-pra-adm-do-bot
 ```
 
 Crie o diretório `.gitgnore`
