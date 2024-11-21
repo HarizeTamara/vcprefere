@@ -1,70 +1,118 @@
-// Import necessary modules and configure dotenv for environment variables
+// Import modules and configure dotenv for environment variables
 require('dotenv').config();
-const { Client, GatewayIntentBits, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, SlashCommandBuilder, EmbedBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, InteractionType, REST, Routes } = require('discord.js');
 
 // Create a new client instance
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 });
 
-// Load the token from the environment variables
+// Load variables from .env
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
-const guildId = process.env.DISCORD_GUILD_ID;
+const userId = process.env.ALLOWED_USER_ID; 
+const suggestionChannelId = process.env.SUGGESTION_CHANNEL_ID;
+const submitChannelId = process.env.SUBMIT_CHANNEL_ID; // Seu ID para Adm do Bot
 
-// When the bot is ready, this event runs once
+// Debugging environment variables
+console.log('Client ID:', clientId);
+console.log('Suggestion Channel ID:', suggestionChannelId);
+console.log('Submit Channel ID:', submitChannelId);
+console.log('Discord Token:', token);
+console.log('User ID:', userId);   
+
+// Login the bot
+client.login(token).catch((error) => {
+    console.error('Failed to login:', error);
+});
+
+// Event: When the bot is ready
 client.once('ready', async () => {
-    console.log('Bot is online and ready! 🥷👾');
-});
+    console.log(`Bot is online as ${client.user.tag}! 🥷`);
 
-// List of random questions for the command
-const questions = [
-    'sua pergunta aqui',
-];
-
-// Register the slash command /vcprefere
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
-
-    const { commandName } = interaction;
-
-    if (commandName === 'vcprefere') {
-        // Select a random question from the list
-        const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
-
-        // Create the embed for the question
-        const embed = new EmbedBuilder()
-            .setColor(0x00AE86) // Example color
-            .setTitle('Você prefere? 🤔')
-            .setDescription(randomQuestion)
-            .setFooter({ text: 'Vote reagindo abaixo!' });
-
-        // Send the embed and add reactions
-        const message = await interaction.reply({
-            embeds: [embed],
-            fetchReply: true
-        });
-
-        // Add reaction emojis for voting
-        await message.react('1️⃣');  // Option 1
-        await message.react('2️⃣');  // Option 2
-    }
-});
-
-client.on('ready', async () => {
-    console.log('Bot is ready! 🥷');
-
-    // Register the command globally for all servers
+    // Register slash commands globally
     const commands = [
         new SlashCommandBuilder()
             .setName('vcprefere')
-            .setDescription('Escolha entre duas opções aleatórias.')
+            .setDescription('Escolha entre duas opções aleatórias.'),
+        new SlashCommandBuilder()
+            .setName('sugerir')
+            .setDescription('Abra o modal para sugerir algo.'),
     ];
 
-    await client.application.commands.set(commands);
+    const rest = new REST({ version: '10' }).setToken(token);
 
-    console.log('Slash command /vcprefere registered globally 📡.');
+    try {
+        console.log('Registering slash commands globally...');
+        await rest.put(Routes.applicationCommands(clientId), { body: commands });
+        console.log('Slash commands registered successfully!');
+    } catch (error) {
+        console.error('Error registering commands:', error);
+    }
 });
 
-// Log the bot in
-client.login(token);
+// Lista de perguntas do comando /vcprefere 
+const questions = [
+    'Você prefere isso ou aquilo?',
+];
+
+// Event: Handle interactions (slash commands and modals)
+client.on('interactionCreate', async (interaction) => {
+    if (interaction.isCommand()) {
+        const { commandName } = interaction;
+
+        // Handle /vcprefere command
+        if (commandName === 'vcprefere') {
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+
+            const embed = new EmbedBuilder()
+                .setColor(0x00ae86)
+                .setTitle('Você prefere? 🤔')
+                .setDescription(randomQuestion)
+                .setFooter({ text: 'Vote reagindo abaixo!' });
+
+            const message = await interaction.reply({ embeds: [embed], fetchReply: true });
+            await message.react('1️⃣'); // Option 1
+            await message.react('2️⃣'); // Option 2
+        }
+
+        // Handle /sugerir command
+        if (commandName === 'sugerir') {
+            const modal = new ModalBuilder()
+                .setCustomId('sugestaoModal')
+                .setTitle('Envie sua Sugestão');
+
+            const suggestionInput = new TextInputBuilder()
+                .setCustomId('suggestionInput')
+                .setLabel('Qual é a sua sugestão?')
+                .setStyle(TextInputStyle.Paragraph)
+                .setPlaceholder('Digite aqui sua sugestão...')
+                .setRequired(true);
+
+            const actionRow = new ActionRowBuilder().addComponents(suggestionInput);
+            modal.addComponents(actionRow);
+
+            await interaction.showModal(modal);
+        }
+    }
+
+    // Handle modal submissions
+    if (interaction.type === InteractionType.ModalSubmit && interaction.customId === 'sugestaoModal') {
+        const suggestion = interaction.fields.getTextInputValue('suggestionInput');
+        const submitChannel = client.channels.cache.get(submitChannelId);
+
+        if (!submitChannel) {
+            return interaction.reply({ content: 'Não consegui encontrar o canal para enviar a sugestão.', ephemeral: true });
+        }
+
+        const embed = new EmbedBuilder()
+            .setColor(0x00ae86)
+            .setTitle('Nova Sugestão 💡')
+            .setDescription(suggestion)
+            .setFooter({ text: `Enviado por ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() })
+            .setTimestamp();
+
+        await submitChannel.send({ embeds: [embed] });
+        await interaction.reply({ content: 'Sua sugestão foi enviada com sucesso! 🎉', ephemeral: true });
+    }
+});
