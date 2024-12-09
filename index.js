@@ -10,16 +10,16 @@ const client = new Client({
 // Load variables from .env
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
-const userId = process.env.ALLOWED_USER_ID; 
+const admId = process.env.ADM_ID;
 const suggestionChannelId = process.env.SUGGESTION_CHANNEL_ID;
-const submitChannelId = process.env.SUBMIT_CHANNEL_ID; // Seu ID para Adm do Bot
+const submitChannelId = process.env.SUBMIT_CHANNEL_ID;
 
 // Debugging environment variables
 console.log('Client ID:', clientId);
 console.log('Suggestion Channel ID:', suggestionChannelId);
 console.log('Submit Channel ID:', submitChannelId);
 console.log('Discord Token:', token);
-console.log('User ID:', userId);   
+console.log('User ID:', admId);
 
 // Login the bot
 client.login(token).catch((error) => {
@@ -38,6 +38,9 @@ client.once('ready', async () => {
         new SlashCommandBuilder()
             .setName('sugerir')
             .setDescription('Abra o modal para sugerir algo.'),
+        new SlashCommandBuilder()
+            .setName('quiz')
+            .setDescription('Responda a uma pergunta aleatória.'),
     ];
 
     const rest = new REST({ version: '10' }).setToken(token);
@@ -54,6 +57,27 @@ client.once('ready', async () => {
 // Lista de perguntas do comando /vcprefere 
 const questions = [
     'Você prefere isso ou aquilo?',
+            // ... (adicione mais perguntas no mesmo formato)
+];
+
+// Lista de perguntas para o comando /quiz
+const quizQuestions = [
+    {
+        question: 'Qual é a capital da França?',
+        options: ['Paris', 'Berlim', 'Londres', 'Roma'],
+        correct: 1,
+    },
+    {
+        question: 'Qual é o maior planeta do sistema solar?',
+        options: ['Terra', 'Marte', 'Júpiter', 'Vênus'],
+        correct: 3,
+    },
+    {
+        question: 'Quem pintou a Mona Lisa?',
+        options: ['Michelangelo', 'Leonardo da Vinci', 'Van Gogh', 'Picasso'],
+        correct: 2,
+    },
+    // ... (adicione mais perguntas no mesmo formato)
 ];
 
 // Event: Handle interactions (slash commands and modals)
@@ -63,7 +87,7 @@ client.on('interactionCreate', async (interaction) => {
 
         // Handle /vcprefere command
         if (commandName === 'vcprefere') {
-            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            const randomQuestion = preferQuestions[Math.floor(Math.random() * preferQuestions.length)];
 
             const embed = new EmbedBuilder()
                 .setColor(0x00ae86)
@@ -93,6 +117,53 @@ client.on('interactionCreate', async (interaction) => {
             modal.addComponents(actionRow);
 
             await interaction.showModal(modal);
+        }
+
+        // Handle /quiz command
+        if (commandName === 'quiz') {
+            const randomQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+
+            const embed = new EmbedBuilder()
+                .setTitle('📚 Quiz')
+                .setDescription(randomQuiz.question)
+                .addFields(
+                    randomQuiz.options.map((option, index) => ({
+                        name: `\`${index + 1}\`. ${option}`,
+                        value: '\u200B',
+                    }))
+                )
+                .setColor(0x00ae86)
+                .setFooter({ text: 'Responda com o número da alternativa (1, 2, 3 ou 4).' });
+
+            const message = await interaction.reply({
+                embeds: [embed],
+                fetchReply: true,
+            });
+
+            const filter = (response) =>
+                ['1', '2', '3', '4'].includes(response.content) &&
+                response.author.id === interaction.user.id;
+
+            const collector = message.channel.createMessageCollector({
+                filter,
+                time: 20000,
+                max: 1,
+            });
+
+            collector.on('collect', (response) => {
+                const answer = parseInt(response.content, 10);
+                if (answer === randomQuiz.correct) {
+                    response.reply('🎉 Parabéns! Você acertou!');
+                } else {
+                    response.reply(`❌ Resposta errada! A resposta correta era \`${randomQuiz.correct}\`.`);
+                }
+            });
+
+            collector.on('end', (collected) => {
+                if (collected.size === 0) {
+                    message.channel.send(`⏰ O tempo acabou! A resposta correta era \`${randomQuiz.correct}\`.`);
+                }
+            });
         }
     }
 
